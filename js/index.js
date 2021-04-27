@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d")
 
 let cW = canvas.width
 let cH = canvas.height
+let gravity = 4
 
 //block width 
 let bW = 180
@@ -12,18 +13,23 @@ let bH = 100
 let blockColor = "black"
 //block counter
 let numBlocks = 1
+/*
+TOWER VIRTUAL LIMITS
+(go to p.93-94)
+*/
+let twrLeft = (cW/2) - (bW/2) //1 
+let twrRight = (cW/2) + (bW/2) //3
+let twrTop = (cH - (numBlocks * bH)) //4
 
 // Class for the blocks
 class block {
-  constructor(boxWidth, boxHeight, color, xr, yl) {
+  constructor(boxWidth, boxHeight, color, x, y) {
     this.width = boxWidth
     this.height = boxHeight
-    this.xl = yl
-    this.xr = xr
+    this.x = x
+    this.y = y
     this.speedx = speedx
     this.color = color
-    this.gravity = gravity
-    this.gravitySpeed = gravitySpeed
   }
   //Gets new limits before drop
   getNewLimits(){
@@ -31,10 +37,9 @@ class block {
   }
 
   //Tells you if it dropped within tower limits
-  dropped(tower){
-  //   return !(
-  //     this.xl > 
-  //   )
+  update(){
+    if(this.boxHeight){}
+
   }
 }
 
@@ -44,28 +49,21 @@ function drawBlock(w,h,top,c) {
     ctx.fillStyle = c
     ctx.fillRect(twrLeft,top,w,h)
     ctx.strokeStyle = 'white'
-    ctx.strokeRect(twrLeft,top,w,h)
     ctx.stroke()
+    ctx.strokeRect(twrLeft,top,w,h)
   numBlocks += 1
   twrTop -= h
   console.log("block down");
 }
-let twrLeft = (cW/2) - (bW/2) //1 
-let twrRight = (cW/2) + (bW/2) //3
-let twrTop = (cH - (numBlocks * bH)) //4
 
 class tower {
   constructor(twrTop, twrLeft, twrRight) {
-  this.twrTop = twrTop
-  this.twrLeft = twrLeft
-  this.twrRight = twrRight
+    this.twrTop = twrTop
+    this.twrLeft = twrLeft
+    this.twrRight = twrRight
   }
-    /*
-TOWER VIRTUAL LIMITS
-(go to p.93-94)
-*/
-  getTwrLimits(){
-      
+getTwrLimits(){
+  
   }  
   
 }
@@ -80,22 +78,34 @@ const background = () => {
 }
 background()
 
+/*
+PENDULUM
+*/
+function upperBlock(uw,uh,utop,uc) {
+  ctx.beginPath()
+    ctx.fillStyle = uc
+    ctx.fillRect(twrLeft/2, utop, uw, uh)
+    
+    // ctx.strokeStyle = 'white'
+    // ctx.strokeRect(twrLeft,top,w,h)
+  console.log("block on top");
+}
+upperBlock(bW,bH,20,blockColor)
 
 
 
-
-
-
+//TEST
+function test (){
+  drawBlock(bW,bH,twrTop,blockColor)
+  // pendulum(time)
+  console.log(twrTop);
+  console.log(numBlocks);
+}
+// dropBlock(bW,bH,twrTop,blockColor)
 drawBlock(bW,bH,twrTop,blockColor)
 console.log(twrTop);
 console.log(numBlocks);
 console.log("first block");
-
-function test (){
-  drawBlock(bW,bH,twrTop,blockColor)
-  console.log(twrTop);
-  console.log(numBlocks);
-}
 
 function reset (){
   numBlocks = 1
@@ -105,5 +115,15 @@ function reset (){
   drawBlock(bW,bH,twrTop,blockColor)
 }
 
+//Animation Loop
+function animate(){
+  requestAnimationFrame(animate)
+  ctx.clearRect(0,0, canvas.width, canvas.height)
+
+  block.update()
+}
+
+
+//buttons
 let dropButton = document.getElementById("drop").addEventListener("click", test)
 let resetButton = document.getElementById("reset").addEventListener("click", reset)
