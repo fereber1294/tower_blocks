@@ -22,26 +22,26 @@ let twrRight = (cW/2) + (bW/2) //3
 let twrTop = (cH - (numBlocks * bH)) //4
 
 // Class for the blocks
-class block {
-  constructor(boxWidth, boxHeight, color, x, y) {
-    this.width = boxWidth
-    this.height = boxHeight
-    this.x = x
-    this.y = y
-    this.speedx = speedx
-    this.color = color
-  }
-  //Gets new limits before drop
-  getNewLimits(){
+// class block {
+//   constructor(boxWidth, boxHeight, color, x, y) {
+//     this.width = boxWidth
+//     this.height = boxHeight
+//     this.x = x
+//     this.y = y
+//     this.speedx = speedx
+//     this.color = color
+//   }
+//   //Gets new limits before drop
+//   getNewLimits(){
     
-  }
+//   }
 
-  //Tells you if it dropped within tower limits
-  update(){
-    if(this.boxHeight){}
+//   //Tells you if it dropped within tower limits
+//   update(){
+//     if(this.boxHeight){}
 
-  }
-}
+//   }
+// }
 
 //Function that draws blocks
 function drawBlock(w,h,top,c) {
@@ -81,16 +81,16 @@ background()
 /*
 PENDULUM
 */
-function upperBlock(uw,uh,utop,uc) {
-  ctx.beginPath()
-    ctx.fillStyle = uc
-    ctx.fillRect(twrLeft/2, utop, uw, uh)
+// function upperBlock(uw,uh,utop,uc) {
+//   ctx.beginPath()
+//     ctx.fillStyle = uc
+//     ctx.fillRect(twrLeft/2, utop, uw, uh)
     
-    // ctx.strokeStyle = 'white'
-    // ctx.strokeRect(twrLeft,top,w,h)
-  console.log("block on top");
-}
-upperBlock(bW,bH,20,blockColor)
+//     // ctx.strokeStyle = 'white'
+//     // ctx.strokeRect(twrLeft,top,w,h)
+//   console.log("block on top");
+// }
+// upperBlock(bW,bH,20,blockColor)
 
 
 

@@ -1,47 +1,33 @@
 // const canvas = document.getElementById("main")
 // const ctx = canvas.getContext("2d")
+const background = new Image();
+background.src = './editables/fondo.png'
 
-const background = () => {
-  let grd = ctx.createLinearGradient(0,-800,0,800)
-  grd.addColorStop(0, "black")
-  grd.addColorStop(1, "white")
-  
-  ctx.fillStyle = grd
-  ctx.fillRect(0,0,600,800)
+const myGameArea = {
+  frames: 0,
+  score: function() {
+    const points = Math.floor(this.frames/5);
+    ctx.font = '40px serif';
+    ctx.fillStyle = 'white';
+    ctx.fillText(`Score ${points}`, 75, 50)
+  }
+
 }
-background()
+const backgroundImg = {
+  img: background,
+  x:0,
+  y:0,
+  speed: 1,
+  move:function(){
+    this.y += this.speed
+    this.y %= cH
+  },
+  draw: function(){
+    ctx.drawImage(this.img,0,this.y,cW,cH);
+    ctx.drawImage(this.img,0,this.y - cH,cW,cH);
+  }
 
-function drawBase(w,h,top) {
-  ctx.beginPath()
-    ctx.fillStyle = "gray"
-    ctx.fillRect(twrLeft,top,w,h)
-    ctx.strokeStyle = 'black'
-    ctx.stroke()
-    ctx.strokeRect(twrLeft,top,w,h)
-  numBlocks += 1
-  twrTop -= h
-  console.log("base set");
 }
-
-
-//TEST
-function test (){
-  drawBase(bW,bH,twrTop)
-  // pendulum(time)
-  console.log(twrTop);
-  console.log(numBlocks);
-}
-// dropBlock(bW,bH,twrTop,blockColor)
-
-
-function reset (){
-  numBlocks = 1
-  twrTop = (cH - (numBlocks * bH))
-  ctx.clearRect(0,0,cW,cH)
-  background()
-  drawBlock(bW,bH,twrTop,blockColor)
-}
-
 
 // //buttons
 // let dropButton = document.getElementById("drop").addEventListener("click", test)

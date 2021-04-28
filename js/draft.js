@@ -4,7 +4,7 @@ const ctx = canvas.getContext("2d")
 let cW = canvas.width
 let cH = canvas.height
 let gravity = 1
-let friction = 0.417
+let friction = 0.4
 //block width 
 let bW = 150
 //block heigth
@@ -22,7 +22,7 @@ let twrLeft = (cW/2) - (bW/2) //1
 let twrRight = (cW/2) + (bW/2) //3
 let twrTop = (cH - (bH/3)) //4
 
-console.log("tower top is " + twrTop);
+// console.log("tower top is " + twrTop);
 
 // Class for the blocks
 class Block {
@@ -38,7 +38,8 @@ class Block {
       if(this.y + this.boxHeight > twrTop){
         this.speedY = -this.speedY * friction
         twrTop - this.boxHeight
-        console.log("tower top is " + twrTop);
+        // blox.update()
+        // console.log("tower top is " + twrTop);
       } else {
         this.speedY += gravity
       }
@@ -54,7 +55,7 @@ class Block {
         ctx.strokeRect(twrLeft,top,this.boxWidth, this.boxHeight)
       numBlocks += 1
       // twrTop -= this.boxHeight
-      console.log("block down");
+      // console.log("block down");
     }
   }
   // update(){
@@ -77,32 +78,49 @@ function drawBase(w,h,top) {
     ctx.stroke()
     ctx.strokeRect(twrLeft,top,w,h)
   numBlocks += 1
-  // twrTop -= h
   console.log("base set");
 }
-function init(){
-  
+function init(){  
   blox = new Block(twrLeft, 50,gravity,bW,bH,blockColor)
-  console.log(blox);
-  
-  
+  console.log(blox);  
 }
-function saludo(){
-  console.log("click")
-}
+
 
 //Animation Loop
+
+const delCanvas = () => {
+  ctx.clearRect(0,0, cW, cH)
+}
+
+
 function animate(){
-  requestAnimationFrame(animate)
-  ctx.clearRect(0,0, canvas.width, canvas.height)
-  drawBase(bW,bH/3,twrTop+(bH/3)*2)
   
+  requestAnimationFrame(animate)
+  ctx.clearRect(0,0, cW, cH)
+ 
   blox.update()
 }
-//TEST
-//buttons
-let dropButton = document.getElementById("drop").addEventListener("click", saludo())
-// let resetButton = document.getElementById("reset").addEventListener("click", reset)
-
 init()
 animate()
+
+
+//MOTOR
+
+window.onload = () => {
+  document.getElementById("drop").addEventListener("click", saludo())
+  document.getElementById("reset").addEventListener("click", reset)
+  document.getElementById("start-button").onclick = () => {
+    startGame();
+  };
+  function startGame(){
+    delCanvas();
+    backgroundImg.move();
+    backgroundImg.draw();
+    init()
+    animate()
+    drawBase(bW,bH/3,twrTop+(bH/3)*2)
+
+
+  }
+
+}
