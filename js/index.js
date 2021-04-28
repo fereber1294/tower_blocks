@@ -1,6 +1,12 @@
 const canvas = document.getElementById("main")
 const ctx = canvas.getContext("2d")
 
+let colors = [
+  'white',
+  'chartreuse',
+  'cyan',
+]
+
 let cW = canvas.width
 let cH = canvas.height
 let gravity = 4
@@ -49,6 +55,11 @@ function drawBlock(w,h,top,c) {
     ctx.fillStyle = c
     ctx.fillRect(twrLeft,top,w,h)
     ctx.strokeStyle = 'white'
+    ctx.lineWidth = 4
+    ctx.shadowColor = 'white'
+    ctx.shadowBlur = 15
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
     ctx.stroke()
     ctx.strokeRect(twrLeft,top,w,h)
   numBlocks += 1
@@ -68,16 +79,44 @@ getTwrLimits(){
   
 }
 //Add background as a gradient
-const background = () => {
-  let grd = ctx.createLinearGradient(0,-800,0,800)
-  grd.addColorStop(0, "black")
-  grd.addColorStop(1, "white")
+// const background = () => {
+//   let grd = ctx.createLinearGradient(0,-800,0,800)
+//   grd.addColorStop(0, "black")
+//   grd.addColorStop(1, "white")
   
-  ctx.fillStyle = grd
-  ctx.fillRect(0,0,600,800)
-}
-background()
+//   ctx.fillStyle = grd
+//   ctx.fillRect(0,0,600,800)
+// }
+// background()
+const background = new Image();
+background.src = './editables/fondo.png'
 
+const myGameArea = {
+  frames: 0,
+  score: function() {
+    const points = Math.floor(this.frames/5);
+    ctx.font = '40px serif';
+    ctx.fillStyle = 'white';
+    ctx.fillText(`Score ${points}`, 75, 50)
+  }
+
+}
+const backgroundImg = {
+  img: background,
+  x:0,
+  y:0,
+  speed: 1,
+  move:function(){
+    this.y += this.speed
+    this.y %= 2100
+  },
+  draw: function(){
+    ctx.drawImage(this.img,0,2100,cW,-2100);
+    ctx.drawImage(this.img,0,this.y - 2100,cW,-2100);
+  }
+
+}
+backgroundImg.draw()
 /*
 PENDULUM
 */
@@ -111,7 +150,7 @@ function reset (){
   numBlocks = 1
   twrTop = (cH - (numBlocks * bH))
   ctx.clearRect(0,0,cW,cH)
-  background()
+  backgroundImg.draw()
   drawBlock(bW,bH,twrTop,blockColor)
 }
 

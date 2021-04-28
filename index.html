@@ -5,17 +5,42 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  
-  <canvas id="main" height="700" width="500"></canvas>
+  <header>
+    <div id="title">
+      <h1>-Bloxx-</h1>
+    </div>
+  </header>
 
-  <button id="start-button"> Start!</button>
-  <button id="drop"> Drop it!</button>
-  <button id="reset"> Reset</button>
-  <!-- <script src="js/index.js"></script> -->
-  <script src="js/draft.js"></script>
-  <!-- <script src="js/entourage.js"></script> -->
+  <div id="container">
+    
+    <div id="back">
+      <canvas id="background-canvas" height="720" width="1920"></canvas>
+    </div>
+  
+    <div id="game">
+      <div id="left-panel">
+        <h3>Instructions -...........................                .</h3>
+      </div>
+      
+      <div id="main-game">
+        <canvas id="main" height="700" width="500"></canvas>
+      </div>
+  
+      <div id="right-panel">
+        <button id="start-button"> Start!</button>
+        <button id="drop"> Drop it!</button>
+        <button id="reset"> Reset</button>
+      </div>
+      
+    </div>
+  </div>
+  <script src="js/index.js"></script>
+  <!-- <script src="js/draft.js"></script>
+  <script src="js/entourage.js"></script> -->
 </body>
 </html>

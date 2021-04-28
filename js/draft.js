@@ -64,6 +64,39 @@ class Block {
 
 }
 
+//Background
+
+const background = new Image();
+background.src = './editables/fondo.png'
+
+const myGameArea = {
+  frames: 0,
+  score: function() {
+    const points = Math.floor(this.frames/5);
+    ctx.font = '40px serif';
+    ctx.fillStyle = 'white';
+    ctx.fillText(`Score ${points}`, 75, 50)
+  }
+
+}
+const backgroundImg = {
+  img: background,
+  x:0,
+  y:0,
+  speed: 1,
+  move:function(){
+    this.y += this.speed
+    this.y %= cH
+  },
+  draw: function(){
+    ctx.drawImage(this.img,0,this.y,cW,cH);
+    ctx.drawImage(this.img,0,this.y - cH,cW,cH);
+  }
+
+}
+
+
+
 //Init the element
 
 let blox
@@ -100,27 +133,27 @@ function animate(){
  
   blox.update()
 }
-init()
-animate()
+// init()
+// animate()
 
 
 //MOTOR
 
 window.onload = () => {
-  document.getElementById("drop").addEventListener("click", saludo())
+  document.getElementById("drop").addEventListener("click", init())
   document.getElementById("reset").addEventListener("click", reset)
   document.getElementById("start-button").onclick = () => {
     startGame();
   };
   function startGame(){
     delCanvas();
-    backgroundImg.move();
-    backgroundImg.draw();
-    init()
-    animate()
-    drawBase(bW,bH/3,twrTop+(bH/3)*2)
-
-
+    // init()
+    // animate()
+    
+    
   }
-
+  
 }
+backgroundImg.move();
+backgroundImg.draw();
+drawBase(bW,bH/3,twrTop+(bH/3)*2)
