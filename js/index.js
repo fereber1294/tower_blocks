@@ -1,24 +1,25 @@
 const canvas = document.getElementById("main")
 const ctx = canvas.getContext("2d")
 
-let colors = [
-  'white',
-  'chartreuse',
-  'cyan',
-]
+// let colors = [
+//   'white',
+//   'chartreuse',
+//   'cyan',
+// ]
 
 let cW = canvas.width
 let cH = canvas.height
-let gravity = 4
+let gravity = 1
+let friction = 0.4
 
 //block width 
 let bW = 180
 //block heigth
 let bH = 100
 //block color
-let blockColor = "black"
+let blockColor = 'rgba(0,0,0,0.5)'
 //block counter
-let numBlocks = 1
+let numBlocks = 0
 /*
 TOWER VIRTUAL LIMITS
 (go to p.93-94)
@@ -27,67 +28,87 @@ let twrLeft = (cW/2) - (bW/2) //1
 let twrRight = (cW/2) + (bW/2) //3
 let twrTop = (cH - (numBlocks * bH)) //4
 
+/*
+WINNING LIMIT
+*/
+
+let winLine= 150
+
+
 // Class for the blocks
-// class block {
-//   constructor(boxWidth, boxHeight, color, x, y) {
-//     this.width = boxWidth
-//     this.height = boxHeight
-//     this.x = x
-//     this.y = y
-//     this.speedx = speedx
-//     this.color = color
-//   }
-//   //Gets new limits before drop
-//   getNewLimits(){
-    
-//   }
+class Block {
+  constructor(x,y,dy,boxWidth, boxHeight,color){
+    this.x = x
+    this.y = y
+    this.dy = dy
+    this.boxWidth = boxWidth
+    this.boxHeight = boxHeight
+    this.color = color
 
-//   //Tells you if it dropped within tower limits
-//   update(){
-//     if(this.boxHeight){}
+    this.update = function(){
+      if(this.y + this.boxHeight > cH){
+        this.dy = 0
+      }
+      this.y += this.dy
+      this.drawBlock()
+    }
+    this.drawBlock = function() {
+      ctx.beginPath()
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.x,this.y,this.boxWidth,this.boxHeight)
+        ctx.strokeStyle = 'white'
+        ctx.lineWidth = 4
+        ctx.shadowColor = 'white'
+        ctx.shadowBlur = 15
+        ctx.shadowOffsetX = 0
+        ctx.shadowOffsetY = 0
+        ctx.stroke()
+        ctx.strokeRect(this.x,this.y,this.boxWidth, this.boxHeight)
+      numBlocks += 1
+      twrTop -= this.boxHeight
+      console.log("bloxx printed");
+    }
+  }
+}
 
-//   }
-// }
 
 //Function that draws blocks
-function drawBlock(w,h,top,c) {
-  ctx.beginPath()
-    ctx.fillStyle = c
-    ctx.fillRect(twrLeft,top,w,h)
-    ctx.strokeStyle = 'white'
-    ctx.lineWidth = 4
-    ctx.shadowColor = 'white'
-    ctx.shadowBlur = 15
-    ctx.shadowOffsetX = 0
-    ctx.shadowOffsetY = 0
-    ctx.stroke()
-    ctx.strokeRect(twrLeft,top,w,h)
-  numBlocks += 1
-  twrTop -= h
-  console.log("block down");
+// function drawBlock(w,h,top,c) {
+//   ctx.beginPath()
+//     ctx.fillStyle = c
+//     ctx.fillRect(twrLeft,top,w,h)
+//     ctx.strokeStyle = 'white'
+//     ctx.lineWidth = 4
+//     ctx.shadowColor = 'white'
+//     ctx.shadowBlur = 15
+//     ctx.shadowOffsetX = 0
+//     ctx.shadowOffsetY = 0
+//     ctx.stroke()
+//     ctx.strokeRect(twrLeft,top,w,h)
+//     numBlocks += 1
+//   twrTop -= h
+//   console.log("block down");
+// }
+
+const detectWinLine = () => {
+  if(twrTop < winLine) {
+    backgroundImg.y += 700
+    console.log("collided");
+    return true
+  }
 }
 
-class tower {
-  constructor(twrTop, twrLeft, twrRight) {
-    this.twrTop = twrTop
-    this.twrLeft = twrLeft
-    this.twrRight = twrRight
-  }
-getTwrLimits(){
-  
-  }  
-  
+const delCanvas = () => {
+  ctx.clearRect(0,0, cW, cH)
 }
-//Add background as a gradient
-// const background = () => {
-//   let grd = ctx.createLinearGradient(0,-800,0,800)
-//   grd.addColorStop(0, "black")
-//   grd.addColorStop(1, "white")
-  
-//   ctx.fillStyle = grd
-//   ctx.fillRect(0,0,600,800)
-// }
-// background()
+
+let bloxx
+let base
+
+
+/*
+BACKGROUND
+*/
 const background = new Image();
 background.src = './editables/fondo.png'
 
@@ -99,70 +120,99 @@ const myGameArea = {
     ctx.fillStyle = 'white';
     ctx.fillText(`Score ${points}`, 75, 50)
   }
-
+  
 }
+
 const backgroundImg = {
   img: background,
   x:0,
   y:0,
   speed: 1,
   move:function(){
-    this.y += this.speed
-    this.y %= 2100
+    
+    
   },
   draw: function(){
-    ctx.drawImage(this.img,0,2100,cW,-2100);
-    ctx.drawImage(this.img,0,this.y - 2100,cW,-2100);
+    ctx.drawImage(this.img,0,this.y + 700,cW,-2100);
   }
-
+  
 }
-backgroundImg.draw()
+
 /*
-PENDULUM
+DRAW WIN LIMIT
 */
-// function upperBlock(uw,uh,utop,uc) {
-//   ctx.beginPath()
-//     ctx.fillStyle = uc
-//     ctx.fillRect(twrLeft/2, utop, uw, uh)
-    
-//     // ctx.strokeStyle = 'white'
-//     // ctx.strokeRect(twrLeft,top,w,h)
-//   console.log("block on top");
-// }
-// upperBlock(bW,bH,20,blockColor)
+const drawLine = () => {
+  ctx.beginPath()
+  ctx.lineWidth = 4
+  ctx.moveTo(0,winLine)
+  ctx.lineTo(cW,winLine)
+  ctx.stroke
+  ctx.closePath()
+}
 
 
 
 //TEST
 function test (){
-  drawBlock(bW,bH,twrTop,blockColor)
-  // pendulum(time)
-  console.log(twrTop);
-  console.log(numBlocks);
-}
-// dropBlock(bW,bH,twrTop,blockColor)
-drawBlock(bW,bH,twrTop,blockColor)
+  bloxx = new Block(twrLeft, 50, gravity,bW,bH,blockColor)
+  console.log(bloxx);
+  bloxx.drawBlock()
+  base.drawBlock()
+  bloxx.update()
+  drawLine()
+  detectWinLine()
+
+  console.log("Top of tower is "+twrTop);
+  console.log("Number of Blocks is "+ (numBlocks-1)); ///////////////corrección chafa, revisar código
+
+backgroundImg.draw()
 console.log(twrTop);
 console.log(numBlocks);
-console.log("first block");
+}
+
+function init(){
+  bloxx = new Block(twrLeft, 50,gravity,bW,bH,blockColor)
+  console.log(bloxx);  
+}
 
 function reset (){
-  numBlocks = 1
+  base = new Block(twrLeft-(bW/2), cH-(bH/3), gravity,bW*2,bH,'rgba(255,165,5,0.5)')
+
+  numBlocks = 0.3
   twrTop = (cH - (numBlocks * bH))
-  ctx.clearRect(0,0,cW,cH)
+
+  // delCanvas()
+  base.drawBlock()  
   backgroundImg.draw()
-  drawBlock(bW,bH,twrTop,blockColor)
+  // backgroundImg.move()// bloxx.drawBlock()
+  // drawBlock(bW,bH,twrTop,blockColor)
 }
 
-//Animation Loop
+/*
+ANIMATION LOOP
+*/
+
 function animate(){
   requestAnimationFrame(animate)
-  ctx.clearRect(0,0, canvas.width, canvas.height)
-
-  block.update()
+  // delCanvas()  
+  bloxx.update()
+  backgroundImg.draw()
 }
 
 
-//buttons
-let dropButton = document.getElementById("drop").addEventListener("click", test)
-let resetButton = document.getElementById("reset").addEventListener("click", reset)
+//MOTOR
+function startGame(){
+  delCanvas();
+  init()
+  animate()
+}   
+
+window.onload = () => {
+  reset()
+  base.drawBlock()
+
+  document.getElementById("drop").addEventListener("click", test)
+  document.getElementById("reset").addEventListener("click", reset)
+  document.getElementById("start-button").addEventListener("click",reset)
+    
+};
