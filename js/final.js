@@ -1,9 +1,8 @@
-
 const canvas = document.getElementById("main")
 const ctx = canvas.getContext("2d")
 
 let blox
-let bloxArr = []
+let bloxArrX = []
 let bloxDown
 
 
@@ -22,10 +21,10 @@ let blockDownGlow = 'rgba(255,47,0,1)'
 //block counter
 let numBlocks = 0
 
+let baseHeight = (bH/3)  
 let twrLeft = (cW/2) - (bW/2) //1 
 let twrRight = (cW/2) + (bW/2) //3
-let twrTop = (cH - (bH/3)) //4
-let baseHeight = (bH/3)  
+let twrTop = (cH - baseHeight) //4
 
 class Pend {
   constructor(x,y,speedY,dx,boxWidth, boxHeight,color){
@@ -38,7 +37,7 @@ class Pend {
     this.color = color
 
     this.updateX = function(){
-      if(this.x + this.boxWidth > cW-baseHeight){
+      if(this.x + this.boxWidth > cW){
         this.dx = -this.dx
         // twrTop = (cH - (numBlocks * bH))
 
@@ -77,6 +76,13 @@ class Block {
     this.updateY = function(){
       if(this.y + this.boxHeight > cH-baseHeight){
         this.dy = 0
+        twrTop += (cH - (numBlocks * bH))
+        bloxArrX.push(this.x)
+        drawNewBlock()
+        addToArr()
+        test()
+        bloxArrX.push(drawNewBlock.x)
+        twrTop += (cH - (numBlocks * bH))
       }
       this.y += this.dy
       this.drawBlock()
@@ -94,19 +100,22 @@ class Block {
         ctx.stroke()
         ctx.strokeRect(this.x,this.y,this.boxWidth, this.boxHeight)
       numBlocks += 1
-      twrTop -= this.boxHeight
       console.log("bloxx printed");
-    }
+      console.log("Tower top is " + twrTop);
+      twrTop += boxHeight
+
+    };
   }
 }
 
 class Tower {
-  constructor(x,y,boxWidth, boxHeight,color){
+  constructor(x,y,boxWidth,boxHeight,color){
     this.x = x
     this.y = y
     this.boxWidth = boxWidth
     this.boxHeight = boxHeight
     this.color = color
+
 
     this.drawBlock = function() {
       ctx.beginPath()
@@ -121,9 +130,18 @@ class Tower {
         ctx.stroke()
         ctx.strokeRect(this.x,this.y,this.boxWidth, this.boxHeight)
       numBlocks += 1
-      twrTop -= this.boxHeight
       console.log("tower printed");
     }
+  }
+  
+  twrLeft() {
+    return newX
+  }
+  twrRight(){
+    return newX + this.bW
+  }
+  twrTop(){
+    return twrTop
   }
 }
 
@@ -131,19 +149,77 @@ class Tower {
 let newX
 let newY
 
-let twrX
-let twrY
+let twrXa
+let twrXb
+let twrY 
+
+function drawNewBlock(x,y,boxWidth,boxHeight,color,blockDownGlow) {
+  ctx.beginPath()
+    ctx.fillStyle = color
+    ctx.fillRect(x,y,boxWidth,boxHeight)
+    ctx.strokeStyle = blockDownGlow
+    ctx.lineWidth = 4
+    ctx.shadowColor = blockDownGlow
+    ctx.shadowBlur = 15
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
+    ctx.stroke()
+    ctx.strokeRect(x,y,boxWidth, boxHeight)
+    numBlocks += 1
+    twrTop = twrTop - (bH)
+}
+
+function test() {
+  for(let i = 0 ; i < bloxArrX.length ; i++){
+    drawNewBlock(dropBlox.x,twrTop,bW,bH,blockDownColor,blockDownGlow)
+    console.log("block x ="+ drawNewBlock.x);
+    console.log("numb is " + numBlocks);
+    bloxArrX = [] 
+  }
+}
+
+function addToArr() {
+  bloxArrX.push(newX)
+  console.log("newX is " + newX);
+
+}
+
 
 function drop() {
-  document.addEventListener('click', (e) => {
-    newX = pend.x
-    newY = pend.y
-    console.log(newY);
-    console.log(newX);
-    dropBlox = new Block(newX, newY, gravity,bW,bH,blockColor)
-    console.log("new blox dropping is at " + dropBlox.x + "," + dropBlox.y)
-    bloxArr.push(1)
-  })
+  newY = pend.y
+  newX = pend.x
+  console.log(newY);
+  console.log(newX);
+  dropBlox = new Block(newX, newY, gravity,bW,bH,blockColor)
+
+  addToArr(dropBlox.x)
+
+  console.log("new blox dropping is at " + dropBlox.x + "," + dropBlox.y)
+  twrXa = newX
+  twrXb = twrXa + bW
+  // twrTop = twrTop - bH
+  // numBlocks += 1
+    test()
+    console.log("Tower top is " + twrTop);  
+    // test()
+}
+
+const background = new Image();
+background.src = './editables/fondo.png'
+
+const backgroundImg = {
+  img: background,
+  x:0,
+  y:0,
+  speed: 1,
+  move:function(){
+    this.y += this.speed
+    this.y %= cH
+  },
+  draw: function(){
+    ctx.drawImage(this.img,0,this.y,cW,cH*3);
+    ctx.drawImage(this.img,0,this.y - cH,cW,cH*3);
+  }
 }
 
 function drawBase(){
@@ -152,20 +228,25 @@ function drawBase(){
   console.log(twrTop);
 }
 
-function getNextBloxxLoc(){
-  document.addEventListener('click', (e) => {
-    twrX = newX
-    twrY = twrY
-  })
-}
 
 function buildTower(){
-  numBlocks = 0.3 + numBlocks
-  twrY = (cH - (numBlocks * bH) - bH)
-  bloxx = new Block(dropBlox.x, twrY,0,bW,bH,blockDownColor)
-  bloxx.drawBlock()
-  twrTop += bH
+  numBlocks = 0.3
+  twrTop = (cH - (numBlocks * bH) - bH)  
+  bloxx = new Block(dropBlox.x, twrTop,0,bW,bH,blockDownColor)
+
 }
+
+
+function reset() {
+
+}
+
+function addToArr() {
+  bloxArrX.push(150)
+  console.log(bloxArrX);
+  
+}
+
 
 function init(){
   dropBlox = new Block(newX, newY, gravity,bW,bH,blockColor)
@@ -178,12 +259,15 @@ function init(){
 function animate() {
   requestAnimationFrame(animate)
   ctx.clearRect(0,0,cW,cH)
+  backgroundImg.draw()
   drawBase()
+  buildTower()
   pend.updateX()
   dropBlox.updateY()
-  bloxx.updateY()  
+  
 }
 
 init()
 animate()
 document.getElementById("drop").addEventListener("click",drop)
+document.getElementById("reset").addEventListener("click",test)
